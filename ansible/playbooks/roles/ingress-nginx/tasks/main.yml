@@ -1,0 +1,18 @@
+    - name: Add Helm repo for ingress-nginx
+      community.kubernetes.helm_repository:
+        name: ingress-nginx
+        repo_url: https://kubernetes.github.io/ingress-nginx
+        state: present
+
+    - name: Install or upgrade ingress-nginx via Helm
+      community.kubernetes.helm:
+        name: ingress-nginx
+        chart_ref: ingress-nginx/ingress-nginx
+        release_namespace: ingress-nginx
+        create_namespace: true
+        values:
+          controller:
+            replicaCount: 2
+            service:
+              type: LoadBalancer
+        state: present

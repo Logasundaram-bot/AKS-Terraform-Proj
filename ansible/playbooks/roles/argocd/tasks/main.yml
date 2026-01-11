@@ -1,0 +1,30 @@
+
+    - name: Add Helm repo for Argo CD
+      community.kubernetes.helm_repository:
+        name: argo
+        repo_url: https://argoproj.github.io/argo-helm
+        state: present
+    - name: Install or upgrade Argo CD via Helm
+      community.kubernetes.helm:
+        name: argocd
+        chart_ref: argo/argo-cd
+        release_namespace: argocd
+        create_namespace: true
+        values:
+          global:
+            domain: ""
+          configs: 
+            params: 
+              server.insecure: true 
+              server.rootpath: /argocd
+              server.basehref: /argocd
+          server:
+            service:
+              type: ClusterIP  # Don't use LoadBalancer
+            ingress:
+              enabled: true
+              ingressClassName: azure-application-gateway
+              hostname: ""
+              path: /argocd
+              tls: false
+        state: present
